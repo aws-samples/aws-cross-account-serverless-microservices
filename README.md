@@ -233,8 +233,8 @@ aws-cli/1.11.142 Python/2.7.12 Linux/4.9.38-16.35.amzn1.x86_64 botocore/1.7.0
 ```
 
 ### Useful references
-* [code-commit-url](https://aws.amazon.com/devops/continuous-delivery/)
-* [code-build-url](https://aws.amazon.com/codebuild/)
-* [code-pipeline-url](https://aws.amazon.com/codepipeline/)
-* [clouformation-url](https://aws.amazon.com/cloudformation/)
-* [lambda-url](https://aws.amazon.com/lambda/)
+* [CodeCommit](https://aws.amazon.com/codecommit)
+* [CodeBuild](https://aws.amazon.com/codebuild/)
+* [CodePipeline](https://aws.amazon.com/codepipeline/)
+* [Cloudformation](https://aws.amazon.com/cloudformation/)
+* [Lambda](https://aws.amazon.com/lambda/)
