@@ -6,7 +6,7 @@ This repo contains a sample application composed of a web application supported 
 
 This library is licensed under the Apache 2.0 License. 
 
-![alt text](images/Serverless-Microservices.png Serverless Architecture)
+![alt text](images/Serverless-Microservices.png "Serverless Architecture")
 
 ## Deploying the serverless microservices sample application
 
@@ -234,8 +234,8 @@ aws-cli/1.11.142 Python/2.7.12 Linux/4.9.38-16.35.amzn1.x86_64 botocore/1.7.0
 ```
 
 ### Useful references
-[code-commit-url](https://aws.amazon.com/devops/continuous-delivery/)
-[code-build-url](https://aws.amazon.com/codebuild/)
-[code-pipeline-url](https://aws.amazon.com/codepipeline/)
-[clouformation-url](https://aws.amazon.com/cloudformation/)
-[lambda-url](https://aws.amazon.com/lambda/)
+* [code-commit-url](https://aws.amazon.com/devops/continuous-delivery/)
+* [code-build-url](https://aws.amazon.com/codebuild/)
+* [code-pipeline-url](https://aws.amazon.com/codepipeline/)
+* [clouformation-url](https://aws.amazon.com/cloudformation/)
+* [lambda-url](https://aws.amazon.com/lambda/)
