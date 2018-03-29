@@ -115,21 +115,20 @@ updating the parameter values in the script, and ensuring the region parameter m
 created the CloudFormation stacks.
 
 Replace the Booking API Gateway endpoint in the 'curl' statement below, and check that you can POST a request to the API.
-Make sure the suffix, /Prod/bookings, stills appears in the URL after you replace the API endpoint:
+Make sure the suffix, /Prod/bookings, still appears in the URL after you replace the API endpoint:
 
 ```bash
 curl -H "Content-Type: application/json" -X POST -d '{"first_name":"Michael","last_name":"Surgeon","from_airport":"DEL","to_airport":"MEL","booking_class":"Economy","departure_date":"12/04/2017","return_date":"21/04/2017","age_group":"Adult"}' https://lv71x6qei8.execute-api.us-east-1.amazonaws.com/Prod/bookings
 ```
 
-this should return a booking_number, such as "7NIXnSSI". You can follow this up with a GET on the API endpoint,
-curl <BookingAPI stack output value>/Prod/bookings, e.g.:
+this should return a booking_number, such as "7NIXnSSI". You can follow this up with a GET on the API endpoint, e.g.:
 
 ```bash
 curl https://lv71x6qei8.execute-api.us-east-1.amazonaws.com/Prod/bookings
 ```
 
 after posting to bookings, the booking information should flow via SNS to airmiles, so check the airmiles endpoint 
-for the booking_number (after replacing the Airmiles API Gateway endpoint, and ensuring /Prod/airmiles still appears in the URL)
+for the booking_number (after replacing the Airmiles API Gateway endpoint, and ensuring /Prod/airmiles still appears in the URL):
 
 ```bash
 curl https://4oiogvmtpa.execute-api.us-east-1.amazonaws.com/Prod/airmiles/7NIXnSSI
