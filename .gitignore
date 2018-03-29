@@ -1,0 +1,14 @@
+me*
+Booking/sam-config.json
+Airmiles/sam-config.json
+s3-bucket-policy.json
+WebUI/S3-Bucket-config.json
+WebUI/buildspec.yml
+Custom/*/
+Custom/six.py*
+Custom/crhelper.pyc
+./.DS_Store
+.DS_Store
+*.json-e
+*.yml-e
+.idea

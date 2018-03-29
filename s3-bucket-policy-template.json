@@ -1,0 +1,69 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<ToolsAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>/*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<ToolsAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<BookingNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>/*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<BookingNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<AirmilesNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>/*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<AirmilesNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<WebNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>/*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<WebNonProdAccount>:root"
+            },
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::<bucketname>"
+        }
+    ]
+}

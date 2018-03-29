@@ -1,0 +1,25 @@
+{
+  "resource": "/bookings",
+  "path": "/bookings",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept-Language": "en-US,en;q=0.5",
+    "content-type": "application/json; charset=utf-8",
+    "Host": "0g013pvvh3.execute-api.us-east-1.amazonaws.com",
+    "Referer": "http://localhost:3000/",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "stage": "Prod",
+    "resourcePath": "/bookings",
+    "httpMethod": "POST",
+    "apiId": "0g013pvvh3"
+  },
+  "body": "{\"first_name\":\"Michael\",\"last_name\":\"Surgeon\",\"from_airport\":\"DEL\",\"to_airport\":\"MEL\",\"booking_class\":\"Economy\",\"departure_date\":\"12/04/2017\",\"return_date\":\"21/04/2017\",\"age_group\":\"Adult\"}",
+  "isBase64Encoded": false
+}

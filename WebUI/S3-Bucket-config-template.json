@@ -1,0 +1,16 @@
+{
+    "Parameters": {
+        "BucketName": "WEBSITE_BUCKET_NAME",
+        "ToolsAccount": "TOOL-ACCOUNT-NUMBER"
+    },
+    "StackPolicy": {
+        "Statement": [
+            {
+                "Action": "Update:*",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Resource": "*"
+            }
+        ]
+    }
+}

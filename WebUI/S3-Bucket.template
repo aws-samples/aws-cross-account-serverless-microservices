@@ -1,0 +1,56 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Website Bucket
+Parameters:
+  BucketName:
+    Type: String
+    Description: Web Hosting Bucket Name
+  IndexDocument:
+    Type: String
+    Description: Path to Index document
+    Default: index.html
+  ToolsAccount:
+    Type: Number
+    Description: AWS AccountNumber for the Tool Account that needs to upload website
+Resources:
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketName:
+        Ref: BucketName
+      WebsiteConfiguration:
+        IndexDocument:
+          Ref: IndexDocument
+  BucketPolicy: 
+    Type: "AWS::S3::BucketPolicy"
+    Properties: 
+      Bucket: 
+        Ref: "WebsiteBucket"
+      PolicyDocument: 
+        Statement: 
+          - 
+            Action: 
+              - "s3:GetObject"
+              - "s3:PutObject"
+              - "s3:DeleteObject"
+              - "s3:PutObjectAcl"
+              - "s3:GetObjectAcl"
+            Effect: "Allow"
+            Resource: !Sub "arn:aws:s3:::${BucketName}/*"
+            Principal: 
+              AWS: !Sub arn:aws:iam::${ToolsAccount}:root
+          - 
+            Action: 
+              - "s3:ListBucket"
+            Effect: "Allow"
+            Resource: !Sub "arn:aws:s3:::${BucketName}"
+            Principal: 
+              AWS: !Sub arn:aws:iam::${ToolsAccount}:root
+
+Outputs:
+  WebURL:
+    Value:
+      Fn::GetAtt:
+      - WebsiteBucket
+      - WebsiteURL

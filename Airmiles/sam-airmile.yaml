@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  NonProdAccount:
+    Description: AWS AccountNumber for the Non Prod Account
+    Type: Number
+
+Resources:
+  MilagesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          version: "1.0"
+          title: "sam-loyalty"
+        paths:
+          /airmiles/{bookingid}:
+            get:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAirmileFunction.Arn}/invocations"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy" 
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              parameters:
+              - name: "bookingid"
+                in: "path"
+                required: true
+                type: "string"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"
+
+  CustomLookup:
+    Type: Custom::Lookup
+    Properties:
+      ServiceToken: !ImportValue custom-lookup-exports
+      loglevel: info
+
+  LambdaResourcePolicy:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt PostAirmileFunction.Arn
+      Principal: sns.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceArn : !GetAtt CustomLookup.booking-lambda-BookingTopicArn
+
+  PostAirmileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: post-airmiles-lambda.handler
+      Runtime: python3.6
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        SubmitBooking:
+          Type: SNS
+          Properties:
+            Topic:
+              !GetAtt CustomLookup.booking-lambda-BookingTopicArn
+      Environment:
+        Variables: 
+          TABLE_NAME: !Ref AirmileDBTable
+
+  GetAirmileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: get-airmiles-lambda.handler
+      Runtime: python3.6
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables: 
+          TABLE_NAME: !Ref AirmileDBTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MilagesApi
+            Path: /airmiles/{bookingid}
+            Method: get
+
+  AirmileDBTable:
+     Type: AWS::DynamoDB::Table
+     Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "booking_number"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "booking_number"
+          KeyType: HASH
+      ProvisionedThroughput: 
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+
+Outputs:
+    AirmileAPI:
+        Description: Airmile API Endpoint
+        Value: !Sub 'https://${MilagesApi}.execute-api.${AWS::Region}.amazonaws.com'
+        Export:
+            Name: AirmileAPI

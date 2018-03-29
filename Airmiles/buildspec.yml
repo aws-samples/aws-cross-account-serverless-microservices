@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - pip install -r requirements.txt -t .
+      - aws cloudformation package --template-file sam-airmile.yaml --s3-bucket $S3Bucket
+                                   --output-template-file output-sam-template.yaml
+artifacts:
+  type: zip
+  files:
+    - output-sam-template.yaml
+    - sam-config.json

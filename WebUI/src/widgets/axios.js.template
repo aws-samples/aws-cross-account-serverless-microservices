@@ -1,0 +1,18 @@
+import axios from 'axios';
+const bookingUrl = 'BOOKING_URL';
+const airmilesUrl = 'AIRMILES_URL';
+class IO {
+	constructor() {
+	}
+	getMileage(id){
+		return axios.get(airmilesUrl+'/Prod/airmiles/'+id);
+	}
+	getTickets(){
+		return axios.get(bookingUrl+'/Prod/bookings');
+	}
+	postSubmit(req){
+		return axios.post(bookingUrl+'/Prod/bookings',req);
+	}
+}
+
+export const io =  new IO();

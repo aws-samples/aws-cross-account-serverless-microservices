@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  NonProdAccount:
+    Description: AWS AccountNumber for the Non Prod Account
+    Type: Number
+
+Resources:
+  ListBookingsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: get-bookings-lambda.handler
+      Runtime: python3.6
+      Policies: AmazonDynamoDBFullAccess
+      Environment:
+        Variables:
+          BOOKING_TABLE_NAME: !Ref BookingsDBTable
+      Events:
+        GetBookings:
+          Type: Api
+          Properties:
+            Path: /bookings
+            RestApiId: !Ref BookingApi
+            Method: get
+  BookingApi:
+    DependsOn: 
+      - ListBookingsFunction
+      - PostBookingsFunction
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          /bookings:
+            post:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PostBookingsFunction.Arn}/invocations"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            get:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListBookingsFunction.Arn}/invocations"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+            options:
+              consumes:
+                - "application/json"
+              produces:
+                - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"
+  PostBookingsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: post-bookings-lambda.handler
+      Runtime: python3.6
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonSNSFullAccess
+      Environment:
+        Variables:
+          BOOKING_SNS_ARN: !Ref BookingTopic
+          BOOKING_TABLE_NAME: !Ref BookingsDBTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /bookings
+            RestApiId: !Ref BookingApi
+            Method: post
+
+  BookingTopic:
+    Type: "AWS::SNS::Topic"
+
+  BookingTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: BookingTopicPolicy
+        Version: '2012-10-17'
+        Statement:
+          - Sid: BookingTopicPolicy-stmt1
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - sns:Publish
+              - sns:RemovePermission
+              - sns:SetTopicAttributes
+              - sns:DeleteTopic
+              - sns:ListSubscriptionsByTopic
+              - sns:GetTopicAttributes
+              - sns:Receive
+              - sns:AddPermission
+              - sns:Subscribe
+            Resource: !Ref BookingTopic
+          - Sid: BookingTopicPolicy-stmt2
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${NonProdAccount}:root
+            Action:
+              - sns:Subscribe
+              - sns:ListSubscriptionsByTopic
+            Resource: !Ref BookingTopic
+      Topics:
+        - !Ref BookingTopic
+
+  BookingsDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "booking_number"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "booking_number"
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  BookingAPI:
+    Description: Booking API Endpoint
+    Value: !Sub 'https://${BookingApi}.execute-api.${AWS::Region}.amazonaws.com'
+    Export:
+      Name: !Sub '${AWS::StackName}-BookingAPI'
+  BookingTopicArn:
+    Description: Booking Topic Arn
+    Value: !Ref BookingTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-BookingTopicArn'

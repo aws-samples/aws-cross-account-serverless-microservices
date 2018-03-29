@@ -1,0 +1,29 @@
+#CREATE event
+{
+  "LogicalResourceId": "CUSTOMLOOKUP",
+  "RequestId": "32883b74-da5b-45ac-9d94-ae9375102100",
+  "RequestType": "Create",
+  "ResourceProperties": {
+    "ServiceToken": "arn:aws:lambda:us-east-1:506709822501:function:airmiles-custom-CustomLookupExports-XWR44ON1H1FK",
+    "loglevel": "info"
+  },
+  "ResourceType": "Custom::Lookup",
+  "ResponseURL": "https://cloudformation-custom-resource-response-useast1.s3.amazonaws.com/arn%3Aaws%3Acloudformation%3Aus-east-1%3A506709822501%3Astack/sample-stack/49bfa570-83e7-11e7-9f25-500c21792a35%7CCUSTOMLOOKUP%7C32883b74-da5b-45ac-9d94-ae9375102100?AWSAccessKeyId=AKIAJNXHFR7P7YGKLDPQ&Expires=1503048722&Signature=FoqMOUy1AKpdeMFHEVeH%2F4eab%2BM%3D",
+  "ServiceToken": "arn:aws:lambda:us-east-1:506709822501:function:airmiles-custom-CustomLookupExports-XWR44ON1H1FK",
+  "StackId": "arn:aws:cloudformation:us-east-1:506709822501:stack/sample-stack/49bfa570-83e7-11e7-9f25-500c21792a35"
+}
+#DELETE event
+{
+  "LogicalResourceId": "CUSTOMLOOKUP",
+  "PhysicalResourceId": "customResourceId",
+  "RequestId": "4cab7624-574b-4161-888a-05269d025d26",
+  "RequestType": "Delete",
+  "ResourceProperties": {
+    "ServiceToken": "arn:aws:lambda:us-east-1:506709822501:function:airmiles-custom-CustomLookupExports-XWR44ON1H1FK",
+    "loglevel": "info"
+  },
+  "ResourceType": "Custom::Lookup",
+  "ResponseURL": "https://cloudformation-custom-resource-response-useast1.s3.amazonaws.com/arn%3Aaws%3Acloudformation%3Aus-east-1%3A506709822501%3Astack/sample-stack/49bfa570-83e7-11e7-9f25-500c21792a35%7CCUSTOMLOOKUP%7C4cab7624-574b-4161-888a-05269d025d26?AWSAccessKeyId=AKIAJNXHFR7P7YGKLDPQ&Expires=1503048741&Signature=mLTxddhXrfPtr8lDRKpEzinzq9g%3D",
+  "ServiceToken": "arn:aws:lambda:us-east-1:506709822501:function:airmiles-custom-CustomLookupExports-XWR44ON1H1FK",
+  "StackId": "arn:aws:cloudformation:us-east-1:506709822501:stack/sample-stack/49bfa570-83e7-11e7-9f25-500c21792a35"
+}
