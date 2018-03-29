@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 BookingNonProdAccountProfile=blog-bookingnonprd
 AirmilesNonProdAccountProfile=blog-airmilesnonprd
-region=us-east-2
+region=us-east-1
 
 bookingAPI=$(aws cloudformation describe-stacks --stack-name booking-lambda --profile $BookingNonProdAccountProfile --region $region --query 'Stacks[0].Outputs[?OutputKey==`BookingAPI`].OutputValue' --output text)
 echo -e "Booking API endpoint is: $bookingAPI"

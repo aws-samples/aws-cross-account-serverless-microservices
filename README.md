@@ -6,7 +6,7 @@ This repo contains a sample application composed of a web application supported 
 
 This library is licensed under the Apache 2.0 License. 
 
-[![](images/Serverless-Microservices.png)][architecture]
+[!(images/Serverless-Microservices.png)]
 
 ## Deploying the serverless microservices sample application
 
@@ -21,7 +21,7 @@ Tools account, i.e. the same account as the CodePipelines
 
 #### 2. Clone the sample Lambda function GitHub repository
 
-[Clone](https://help.github.com/articles/cloning-a-repository/) the [AWS LAMBDA sample application](https://github.com/aws-samples/aws-cross-account-serverless-microservices.git) GitHub repository.
+[Clone](https://help.github.com/articles/cloning-a-repository/) the [microservices sample application](https://github.com/aws-samples/aws-cross-account-serverless-microservices.git) GitHub repository.
 
 From your terminal application, execute the following command:
 
@@ -29,7 +29,7 @@ From your terminal application, execute the following command:
 git clone https://github.com/aws-samples/aws-cross-account-serverless-microservices.git
 ```
 
-This creates a directory named `aws-cross-account-serverless-microservices` in your current directory, which contains the code for the Serverless Microservices sample application.
+This creates a directory named `aws-cross-account-serverless-microservices` under your current directory, which contains the code for the Serverless Microservices sample application.
 
 #### 3. Prepare the bootstrap script that will execute the CloudFormation templates and create the cross stack CodePipelines
 
@@ -42,15 +42,15 @@ vi single-click-cross-account-pipeline.sh
 Change the following entries in lines 2-15, and save your changes:
 
 ```commandline
-ToolsAccount=<AWS 12 digit account number for the Tools account, where the CodePipelines will be deployed>
-ToolsAccountProfile=<AWS profile for the Tools account, as defined in ~/.aws/credentials>
-BookingNonProdAccount=<AWS 12 digit account number for the Booking account, where the Booking microservice will be deployed>
-BookingNonProdAccountProfile=<AWS profile for the Booking account, as defined in ~/.aws/credentials>
-AirmilesNonProdAccount=<AWS 12 digit account number for the Airmiles account, where the Airmiles microservice will be deployed>
-AirmilesNonProdAccountProfile=<AWS profile for the Airmiles account, as defined in ~/.aws/credentials>
-region=<e.g. us-east-1. Must be a region where CodeCommit, CodePipeline, CodeBuild and other required services are supported)
-S3WebsiteBucketName=<a global available name of a bucket for website hosting. This bucket name should not exist>
-S3TmpBucketName=<name of a temporary bucket created by the installation script and used during installation. This bucket name should not exist>
+ToolsAccount = <AWS 12 digit account number for the Tools account, where the CodePipelines will be deployed>
+ToolsAccountProfile = <AWS profile for the Tools account, as defined in ~/.aws/credentials>
+BookingNonProdAccount = <AWS 12 digit account number for the Booking account, where the Booking microservice will be deployed>
+BookingNonProdAccountProfile = <AWS profile for the Booking account, as defined in ~/.aws/credentials>
+AirmilesNonProdAccount = <AWS 12 digit account number for the Airmiles account, where the Airmiles microservice will be deployed>
+AirmilesNonProdAccountProfile = <AWS profile for the Airmiles account, as defined in ~/.aws/credentials>
+region = <e.g. us-east-1. Must be a region where CodeCommit, CodePipeline, CodeBuild and other required services are supported)
+S3WebsiteBucketName = <a global available name of a bucket for website hosting. This bucket name should not exist>
+S3TmpBucketName = <name of a temporary bucket created by the installation script and used during installation. This bucket name should not exist>
 ```
 
 #### 4. Execute single-click-cross-account-pipeline.sh
@@ -114,19 +114,22 @@ Execute `get-api-endpoints.sh` (which you can find in the aws-cross-account-serv
 updating the parameter values in the script, and ensuring the region parameter matches the region where you have 
 created the CloudFormation stacks.
 
-Check that you can POST a request to the API:
+Replace the Booking API Gateway endpoint in the 'curl' statement below, and check that you can POST a request to the API.
+Make sure the suffix, /Prod/bookings, stills appears in the URL after you replace the API endpoint:
 
 ```bash
 curl -H "Content-Type: application/json" -X POST -d '{"first_name":"Michael","last_name":"Surgeon","from_airport":"DEL","to_airport":"MEL","booking_class":"Economy","departure_date":"12/04/2017","return_date":"21/04/2017","age_group":"Adult"}' https://lv71x6qei8.execute-api.us-east-1.amazonaws.com/Prod/bookings
 ```
 
-this should return a booking_number, such as "7NIXnSSI". You can follow this up with a GET on the API endpoint:
+this should return a booking_number, such as "7NIXnSSI". You can follow this up with a GET on the API endpoint,
+curl <BookingAPI stack output value>/Prod/bookings, e.g.:
 
 ```bash
-curl <BookingAPI stack output value>/Prod/bookings, e.g. curl https://lv71x6qei8.execute-api.us-east-1.amazonaws.com/Prod/bookings
+curl https://lv71x6qei8.execute-api.us-east-1.amazonaws.com/Prod/bookings
 ```
 
-after posting to bookings, the booking information should flow via SNS to airmiles, so check the airmiles endpoint for the booking_number
+after posting to bookings, the booking information should flow via SNS to airmiles, so check the airmiles endpoint 
+for the booking_number (after replacing the Airmiles API Gateway endpoint, and ensuring /Prod/airmiles still appears in the URL)
 
 ```bash
 curl https://4oiogvmtpa.execute-api.us-east-1.amazonaws.com/Prod/airmiles/7NIXnSSI
@@ -181,16 +184,18 @@ git commit -m 'new'
 git push
 ```
 
-Wait until the WebUI CodePipeline is complete, login to the Web Interface account in the AWS Console, and find the WebURL 
-output value from the 'webui-s3-website-bucket' stack, which contains the URL to access the serverless web interface.
-Open the WebUI in a browser. 
+Check the status of the WebUI CodePipeline. You can find the CodePipeline in the AWS console by clicking the value of 
+the PipelineUrl stack output variable in the 'webui-pipeline' stack. Wait until the WebUI CodePipeline is complete, 
+login to the Web Interface account in the AWS Console, and find the WebURL output value from the 'webui-s3-website-bucket' 
+stack, which contains the URL to access the serverless web interface. Open the WebUI in a browser. 
 
-After booking a flight you should see the flight booking and the associated airmiles
-in a list at the bottom of the page (you may need to scroll the web page). Your flight booking was sent to the Booking
-microservice, which stored the booking and published an event to SNS. The airmiles microservice consumed the flight
-booking event and calculated the airmiles (just a random calculation, no intelligence) and stored the airmiles. The
-web application queries both APIs to populate the list of flight bookings. The web application, booking and airmiles 
-services all run in separate AWS accounts.
+After booking a flight you should see the flight booking and the associated airmiles in a list at the bottom of the 
+page (you may need to scroll the web page). 
+
+Your flight booking was sent to the Booking microservice, which stored the booking and published an event to SNS. 
+The airmiles microservice consumed the flight booking event and calculated the airmiles (just a random calculation, 
+no intelligence), stored the airmiles in DynamoDB.  The web application queries both APIs to populate the list of 
+flight bookings. The web application, booking and airmiles services all run in separate AWS accounts.
 
 ### Cleanup
 Run the script below to remove all the stacks and associated AWS resources. I do attempt to delete the S3 buckets, though
@@ -202,6 +207,8 @@ $ ./single-click-cleanup.sh
 ```
 
 ### Troubleshooting
+
+#### CLI version issue
 If you receive an error, such as the one below, while running single-click-cross-account-pipeline.sh,  
 it could be related to the version of awscli you are using. For instance, I received the error below:
 
@@ -226,6 +233,7 @@ $ aws --version
 aws-cli/1.11.142 Python/2.7.12 Linux/4.9.38-16.35.amzn1.x86_64 botocore/1.7.0
 ```
 
+### Useful references
 [code-commit-url]: https://aws.amazon.com/devops/continuous-delivery/
 [code-build-url]: https://aws.amazon.com/codebuild/
 [code-pipeline-url]: https://aws.amazon.com/codepipeline/

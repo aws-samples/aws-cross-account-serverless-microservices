@@ -1,31 +1,12 @@
 #!/usr/bin/env bash
-#ToolsAccount=123456789012
-#ToolsAccountProfile=blog-tools
-#BookingNonProdAccount=123456789012
-#BookingNonProdAccountProfile=blog-bookingnonprd
-#AirmilesNonProdAccount=123456789012
-#AirmilesNonProdAccountProfile=blog-airmilesnonprd
-#WebNonProdAccount=123456789012
-#WebNonProdAccountProfile=blog-tools
-#
-##select a region
-#region=us-east-1
-#AirmilesProject=airmiles
-#BookingProject=booking
-#WebProject=webui
-#
-##select unique bucket names
-#S3WebsiteBucketName=your-website-bucket
-#S3TmpBucketName=your-blog-bucket
-
 #replace the AWS account numbers and profiles below to match your own accounts and profiles
-ToolsAccount=295744685835
+ToolsAccount=123456789012
 ToolsAccountProfile=blog-tools
-BookingNonProdAccount=570833937993
+BookingNonProdAccount=123456789012
 BookingNonProdAccountProfile=blog-bookingnonprd
-AirmilesNonProdAccount=506709822501
+AirmilesNonProdAccount=123456789012
 AirmilesNonProdAccountProfile=blog-airmilesnonprd
-WebNonProdAccount=295744685835
+WebNonProdAccount=123456789012
 WebNonProdAccountProfile=blog-tools
 
 #select a region
@@ -35,8 +16,8 @@ BookingProject=booking
 WebProject=webui
 
 #select unique bucket names
-S3WebsiteBucketName=mcdg-website-s3bucket
-S3TmpBucketName=mcdg-blog-s3bucket
+S3WebsiteBucketName=your-website-bucket
+S3TmpBucketName=your-blog-bucket
 
 #delete the S3 bucket holding the website content
 echo -e "deleting the S3 bucket $S3WebsiteBucketName"

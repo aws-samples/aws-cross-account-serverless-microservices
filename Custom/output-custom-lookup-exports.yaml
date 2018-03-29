@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: custom lookup function that retrieves stack resources from CloudFormation
+  stacks in other accounts
+Outputs:
+  CustomLookupExportsLambdaArn:
+    Description: ARN of the lambda that looks up stack exports
+    Export:
+      Name: custom-lookup-exports
+    Value:
+      Fn::GetAtt:
+      - CustomLookupExports
+      - Arn
+Parameters:
+  CustomCrossAccountServiceRole:
+    Description: Cross account role ARN assumed within the Custom Lambda to access
+      stacks in different accounts
+    Type: String
+Resources:
+  CustomLookupExports:
+    Properties:
+      CodeUri: s3://mcdg-blog-s3bucket/custom/347a55d1e206b8d6bd5d5cb9b6dd8a3a
+      Description: custom lookup function, looks up stack exports values in other
+        accounts (uses CustomCrossAccountServiceRole created in this stack for cross
+        account permissions)
+      Environment:
+        Variables:
+          CUSTOM_CROSS_ACCOUNT_ROLE_ARN:
+            Ref: CustomCrossAccountServiceRole
+      Handler: custom-lookup-exports.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+        - CustomLookupLambdaRole
+        - Arn
+      Runtime: python3.6
+      Timeout: 60
+    Type: AWS::Serverless::Function
+  CustomLookupLambdaPolicy:
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Effect: Allow
+          Resource: arn:aws:logs:*:*:*
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Resource:
+          - Ref: CustomCrossAccountServiceRole
+        Version: 2012-10-17
+      PolicyName: Custom-lambda-policy
+      Roles:
+      - Ref: CustomLookupLambdaRole
+    Type: AWS::IAM::Policy
+  CustomLookupLambdaRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: 2012-10-17
+      Path: /
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31

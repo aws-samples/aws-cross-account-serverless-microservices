@@ -1,31 +1,12 @@
 #!/usr/bin/env bash
-#ToolsAccount=123456789012
-#ToolsAccountProfile=blog-tools
-#BookingNonProdAccount=123456789012
-#BookingNonProdAccountProfile=blog-bookingnonprd
-#AirmilesNonProdAccount=123456789012
-#AirmilesNonProdAccountProfile=blog-airmilesnonprd
-#WebNonProdAccount=123456789012
-#WebNonProdAccountProfile=blog-tools
-#
-##select a region
-#region=us-east-1
-#AirmilesProject=airmiles
-#BookingProject=booking
-#WebProject=webui
-#
-##select unique bucket names
-#S3WebsiteBucketName=your-website-bucket
-#S3TmpBucketName=your-blog-bucket
-
 #replace the AWS account numbers and profiles below to match your own accounts and profiles
-ToolsAccount=295744685835
+ToolsAccount=123456789012
 ToolsAccountProfile=blog-tools
-BookingNonProdAccount=570833937993
+BookingNonProdAccount=123456789012
 BookingNonProdAccountProfile=blog-bookingnonprd
-AirmilesNonProdAccount=506709822501
+AirmilesNonProdAccount=123456789012
 AirmilesNonProdAccountProfile=blog-airmilesnonprd
-WebNonProdAccount=295744685835
+WebNonProdAccount=123456789012
 WebNonProdAccountProfile=blog-tools
 
 #select a region
@@ -34,13 +15,18 @@ AirmilesProject=airmiles
 BookingProject=booking
 WebProject=webui
 
-#select unique bucket names
-S3WebsiteBucketName=mcdg-website-s3bucket
-S3TmpBucketName=mcdg-blog-s3bucket
+#select unique bucket names - these buckets will be created for you
+S3WebsiteBucketName=your-website-bucket
+S3TmpBucketName=your-blog-bucket
 
 #create the temporary s3 bucket, used to store the SAM templates
 echo -e "creating s3 bucket $S3TmpBucketName"
-aws s3api create-bucket --bucket $S3TmpBucketName --profile $ToolsAccountProfile --region $region --create-bucket-configuration LocationConstraint=$region
+if [[ "$region" == "us-east-1" ]];
+then
+    aws s3api create-bucket --bucket $S3TmpBucketName --profile $ToolsAccountProfile --region $region
+else
+    aws s3api create-bucket --bucket $S3TmpBucketName --profile $ToolsAccountProfile --region $region --create-bucket-configuration LocationConstraint=$region
+fi
 cp s3-bucket-policy-template.json s3-bucket-policy.json
 sed -i -e "s/<bucketname>/$S3TmpBucketName/g" s3-bucket-policy.json
 sed -i -e "s/<ToolsAccount>/$ToolsAccount/g" s3-bucket-policy.json
