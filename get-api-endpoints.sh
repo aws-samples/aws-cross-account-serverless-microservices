@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo "[!] Getting api endpoint"
 BookingNonProdAccountProfile=blog-bookingnonprd
 AirmilesNonProdAccountProfile=blog-airmilesnonprd
 region=us-east-1
