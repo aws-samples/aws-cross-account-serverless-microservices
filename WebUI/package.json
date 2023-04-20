@@ -10,7 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "vue": "^2.4.2",
     "vuejs-datepicker": "^0.9.11"
   },
